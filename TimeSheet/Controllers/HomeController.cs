@@ -19,15 +19,21 @@ namespace TimeSheet.Controllers
             return View();
         }
 
-        public IActionResult Giorgi()
+        public IActionResult CreateTimesheet()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Manageprojects()
         {
             return View();
         }
+
+        public IActionResult ManageUsers()
+        {
+            return View();
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
