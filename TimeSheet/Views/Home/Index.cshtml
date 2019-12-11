@@ -1,7 +1,37 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    @using Microsoft.AspNetCore.Identity
+    @inject SignInManager<MyUser> SignInManager
+    @inject UserManager<MyUser> UserManager
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome </h1>
 </div>
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="pricing-table">
+        <div class="col">
+            <div class="table">
+                <h2>Timesheet</h2>
+                <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Create">Create Timesheet</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">Timesheets</a>
+
+            </div>
+        </div>
+        <div class="col">
+            <div class="table">
+                <h2>Projects</h2>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index">Manage Project</a>
+
+            </div>
+        </div>
+        <div class="col">
+            <div class="table">
+                <h2>Departments</h2>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Departments" asp-action="Index">Manage Departments </a>
+            </div>
+        </div>
+    </div>
+}

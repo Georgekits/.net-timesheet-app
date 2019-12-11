@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TimeSheet.Models
 {
     public class Department
     {
-        public long departmentId { get; set; }
-        public string departmentName { get; set; }
-        //TODO change it to type user
-        public string departmentUser { get; set; }
-
-        public ICollection<ProjectDepartment> projectDepartment { get; set; }
-        public Project project { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string DepartmentHeadId { get; set; }
+        public MyUser DepartmentHead { get; set; }
+        public ICollection<MyUser> RelatedUsers { get; set; }
+        public ICollection<DepartmentProject> Projects { get; set; }
     }
 }

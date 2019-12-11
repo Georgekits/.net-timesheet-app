@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TimeSheet.Models;
 
 namespace TimeSheet.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<MyUser>
     {
-        public DbSet<Department> Department { get; set; }
-        public DbSet<Project> Project { get; set; }
-        public DbSet<Timesheet> Timesheet { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<TimesheetEntry> Timesheets { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -18,28 +19,30 @@ namespace TimeSheet.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<ProjectDepartment>().HasKey(pd => new { pd.projectId, pd.departmentId});
-            modelBuilder.Entity<Project>().HasKey(p => new { p.projectId });
-            modelBuilder.Entity<Department>().HasKey(d => new { d.departmentId});
-            modelBuilder.Entity<Timesheet>().HasKey(d => new { d.timesheetId });
-
-
-            modelBuilder.Entity<ProjectDepartment>()
-                .HasOne(pr => pr.project)
-                .WithMany(p => p.projectDepartment)
-                .HasForeignKey(pr => pr.projectId);
-            modelBuilder.Entity<ProjectDepartment>()
-                .HasOne(dep => dep.department)
-                .WithMany(d => d.projectDepartment)
-                .HasForeignKey(did => did.departmentId);
+            modelBuilder.Ignore<Microsoft.AspNetCore.Mvc.Rendering.SelectListGroup>();
+            modelBuilder.Ignore<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>();
+            modelBuilder.Entity<DepartmentProject>()
+                 .HasKey(t => new { t.DepartmentId, t.ProjectId });
+            modelBuilder.Entity<DepartmentProject>()
+                 .HasOne(pt => pt.Department)
+                 .WithMany(p => p.Projects)
+                 .HasForeignKey(pt => pt.DepartmentId);
+            //.OnDelete(DeleteBehavior.Cascade);   // Setup CASCADE ON DELETE
+            modelBuilder.Entity<DepartmentProject>()
+                 .HasOne(pt => pt.Project)
+                 .WithMany(t => t.Departments)
+                 .HasForeignKey(pt => pt.ProjectId);
 
             modelBuilder.Entity<Department>()
-                .HasOne(d => d.project)
-                .WithMany(e => e.ownerDepartments);
+                .HasOne(d => d.DepartmentHead)
+                .WithOne(u => u.Department)
+                .HasForeignKey<Department>(ad => ad.DepartmentHeadId);
 
-            modelBuilder.Entity<Timesheet>()
-                .HasOne(a => a.relatedProject)
-                .WithMany(b => b.relatedTimesheets);
+            modelBuilder.Entity<IdentityRole>().HasData(
+                    new IdentityRole() { Name = "Admin", NormalizedName = "ADMIN" },
+                    new IdentityRole() { Name = "Employee", NormalizedName = "EMPLOYEE" },
+                    new IdentityRole() { Name = "Manager", NormalizedName = "MANAGER" }
+                );
         }
     }
 }

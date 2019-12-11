@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TimeSheet.Models
 {
     public class Project
     {
-        public long projectId { get; set; }
-        public string projectName { get; set; }
-        public ICollection<ProjectDepartment> projectDepartment { get; set; }
-
-        public ICollection<Department> ownerDepartments { get; set; }
-
-        public ICollection<Timesheet> relatedTimesheets { get; set; }
-
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public Department OwnerDept { get; set; }
+        public ICollection<TimesheetEntry> RelatedTimesheet { get; set; }
+        public ICollection<DepartmentProject> Departments { get; set; }
     }
 }
