@@ -9,17 +9,21 @@
     <h1 class="display-4">Welcome </h1>
 </div>
 
-@if (SignInManager.IsSignedIn(User))
-{
-    <div class="pricing-table">
-        <div class="col">
-            <div class="table">
-                <h2>Timesheet</h2>
-                <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Create">Create Timesheet</a>
-                <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">Timesheets</a>
 
-            </div>
+    @if (SignInManager.IsSignedIn(User))
+    {
+<div class="pricing-table">
+    <div class="col">
+        <div class="table">
+            <h2>Timesheet</h2>
+            <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Create">Create Timesheet</a>
+            <a class="nav-link text-dark" asp-area="" asp-controller="TimesheetEntries" asp-action="Index">Timesheets</a>
+
         </div>
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
         <div class="col">
             <div class="table">
                 <h2>Projects</h2>
@@ -33,5 +37,26 @@
                 <a class="nav-link text-dark" asp-area="" asp-controller="Departments" asp-action="Index">Manage Departments </a>
             </div>
         </div>
-    </div>
-}
+        <div class="col">
+            <div class="table">
+                <h2>Users</h2>
+                <a class="nav-link text-dark" asp-area="" asp-controller="MyUser" asp-action="Index">Manage Users </a>
+            </div>
+        </div>
+    }
+
+    @if (User.IsInRole("Manager"))
+    {
+        <div class="col">
+            <div class="table">
+                <h2>Statistics</h2>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Statistics" asp-action="Index">View Statistics</a>
+
+            </div>
+        </div>
+
+    }
+
+</div>
+    }
+

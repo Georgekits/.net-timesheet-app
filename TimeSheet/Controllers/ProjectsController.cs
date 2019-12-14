@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TimeSheet.Data;
 using TimeSheet.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace TimeSheet.Controllers
 {
@@ -145,6 +146,14 @@ namespace TimeSheet.Controllers
         private bool ProjectExists(int id)
         {
             return _context.Projects.Any(e => e.Id == id);
+        }
+
+        private readonly UserManager<MyUser> userManager;
+        private readonly SignInManager<MyUser> signInManager;
+        public ProjectsController(UserManager<MyUser> userManager, SignInManager<MyUser> signInManager)
+        {
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
     }
 }
