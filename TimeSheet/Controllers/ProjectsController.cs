@@ -5,17 +5,25 @@ using Microsoft.EntityFrameworkCore;
 using TimeSheet.Data;
 using TimeSheet.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TimeSheet.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<MyUser> userManager;
+        private readonly SignInManager<MyUser> signInManager;
 
-        public ProjectsController(ApplicationDbContext context)
+        public ProjectsController(ApplicationDbContext context,
+            UserManager<MyUser> userManager, SignInManager<MyUser> signInManager)
         {
             _context = context;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
+
 
         // GET: Projects
         public async Task<IActionResult> Index()
@@ -146,14 +154,6 @@ namespace TimeSheet.Controllers
         private bool ProjectExists(int id)
         {
             return _context.Projects.Any(e => e.Id == id);
-        }
-
-        private readonly UserManager<MyUser> userManager;
-        private readonly SignInManager<MyUser> signInManager;
-        public ProjectsController(UserManager<MyUser> userManager, SignInManager<MyUser> signInManager)
-        {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
         }
     }
 }

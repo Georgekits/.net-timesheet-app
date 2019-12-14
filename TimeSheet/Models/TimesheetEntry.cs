@@ -7,12 +7,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TimeSheet.Models
 {
+    [Table("TimesheetEntries")]
     public class TimesheetEntry
     {
         public int Id { get; set; }
         public MyUser RelatedUser { get; set; }
+
+
+        [ForeignKey("RelatedProjectId")]
         [DisplayName("Project")]
-        public Project RelatedProject { get; set; }
+        public virtual Project RelatedProject { get; set; }
+        public int RelatedProjectId { get; set; }
+
         [Column(TypeName = "date")]
         [Required(ErrorMessage = "This field is required.")]
         [DataType(DataType.Date)]

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,10 +19,11 @@ namespace TimeSheet.Controllers
             _context = context;
         }
 
-        // GET: TimesheetEntries
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Timesheets.ToListAsync());
+            return View(await _context.Timesheets
+                .Include(x=>x.RelatedProject)
+                .ToListAsync());
         }
 
         // GET: TimesheetEntries/Details/5
@@ -48,10 +49,9 @@ namespace TimeSheet.Controllers
         {
             foreach (Project r in _context.Projects)
             {
-                ProjectList.Add(new SelectListItem() { Value = r.Name, Text = r.Name });
+                ProjectList.Add(new SelectListItem() { Value = r.Id.ToString(), Text = r.Name });
             }
             ViewBag.Project = ProjectList;
-            //ViewBag.Projects = new SelectList(_context.Projects.ToList(), "Id", "projects");
             return View();
         }
 
@@ -60,7 +60,7 @@ namespace TimeSheet.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DateCreated,HoursWorked")] TimesheetEntry timesheetEntry)
+        public async Task<IActionResult> Create([Bind("Id,DateCreated,HoursWorked,RelatedProjectId")] TimesheetEntry timesheetEntry)
         {
             if (ModelState.IsValid)
             {
@@ -72,6 +72,7 @@ namespace TimeSheet.Controllers
         }
 
         // GET: TimesheetEntries/Edit/5
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -92,6 +93,7 @@ namespace TimeSheet.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,DateCreated,HoursWorked")] TimesheetEntry timesheetEntry)
         {
             if (id != timesheetEntry.Id)
@@ -123,6 +125,7 @@ namespace TimeSheet.Controllers
         }
 
         // GET: TimesheetEntries/Delete/5
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -143,6 +146,7 @@ namespace TimeSheet.Controllers
         // POST: TimesheetEntries/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var timesheetEntry = await _context.Timesheets.FindAsync(id);

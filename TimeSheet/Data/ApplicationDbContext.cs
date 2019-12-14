@@ -10,7 +10,7 @@ namespace TimeSheet.Data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<TimesheetEntry> Timesheets { get; set; }
-
+        public DbSet<MyUser> Users { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -39,10 +39,10 @@ namespace TimeSheet.Data
                 .HasForeignKey<Department>(ad => ad.DepartmentHeadId);
 
             modelBuilder.Entity<IdentityRole>().HasData(
-                    new IdentityRole() { Name = "Admin", NormalizedName = "ADMIN" },
-                    new IdentityRole() { Name = "Employee", NormalizedName = "EMPLOYEE" },
-                    new IdentityRole() { Name = "Manager", NormalizedName = "MANAGER" }
-                );
+                new IdentityRole() { Name = "Admin", NormalizedName = "ADMIN" },
+                new IdentityRole() { Name = "Employee", NormalizedName = "EMPLOYEE" },
+                new IdentityRole() { Name = "Manager", NormalizedName = "MANAGER" }
+            );
         }
     }
 }
